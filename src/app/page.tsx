@@ -1,4 +1,4 @@
-import TestReactNative from '@/rn/test'
+import TestReactNative from '@/demo/ButtonDemo'
 import React from 'react'
 
 const Page = () => {
