@@ -159,52 +159,55 @@ export default function Page() {
       <TwinklingStars count={180} />
 
       {/* ===== HERO / JUMBOTRON ===== */}
-      <section className="relative z-10 flex flex-col items-center justify-start min-h-screen pt-24 px-4">
-        {/* Badge */}
-        <div className="mb-6 px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-sm text-xs text-white/60 tracking-widest uppercase">
-          React Native &middot; Web &middot; UI Kit
-        </div>
-
-        {/* Heading */}
-        <h1 className="text-center text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]">
-          <span className="bg-gradient-to-b from-white via-white/90 to-white/50 bg-clip-text text-transparent">
-            Lunar Kit
-          </span>
-        </h1>
-
-        <p className="mt-6 text-center text-lg sm:text-xl text-white/50 max-w-2xl leading-relaxed">
-          A universal component library for React Native and Web.
-          <br className="hidden sm:block" />
-          Beautiful, accessible, and built for the modern stack.
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="mt-10 flex flex-col sm:flex-row gap-4">
-          <Link
-            href="/docs"
-            className="px-8 py-3 rounded-xl bg-white text-[hsl(222.2,84%,4.9%)] font-semibold text-sm hover:bg-white/90 transition-colors text-center"
-          >
-            Get Started
-          </Link>
-          <Link
-            href="/docs/components/button"
-            className="px-8 py-3 rounded-xl border border-white/15 text-white/80 font-semibold text-sm hover:bg-white/5 transition-colors text-center"
-          >
-            Browse Components
-          </Link>
-        </div>
-
-        {/* Wireframe Planet */}
-        <div className="relative mt-8 w-full max-w-2xl aspect-square">
-          {/* Glow behind planet */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-[60%] h-[60%] rounded-full bg-white/[0.02] blur-3xl" />
+      <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+        {/* Wireframe Planet — behind text */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {/* Glow */}
+          <div className="absolute w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-[700px] md:h-[700px] rounded-full bg-white/[0.015] blur-[100px]" />
+          <div className="w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-[700px] md:h-[700px]">
+            <WireframePlanet />
           </div>
-          <WireframePlanet />
+        </div>
+
+        {/* Content — on top of planet */}
+        <div className="relative z-10 flex flex-col items-center">
+          {/* Badge */}
+          <div className="mb-6 px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-md text-xs text-white/60 tracking-widest uppercase">
+            React Native &middot; Web &middot; UI Kit
+          </div>
+
+          {/* Heading */}
+          <h1 className="text-center text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[1.05]">
+            <span className="bg-gradient-to-b from-white via-white/90 to-white/40 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]">
+              Lunar Kit
+            </span>
+          </h1>
+
+          <p className="mt-6 text-center text-lg sm:text-xl text-white/50 max-w-2xl leading-relaxed backdrop-blur-sm">
+            A universal component library for React Native and Web.
+            <br className="hidden sm:block" />
+            Beautiful, accessible, and built for the modern stack.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="mt-10 flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/docs"
+              className="px-8 py-3 rounded-xl bg-white text-[hsl(222.2,84%,4.9%)] font-semibold text-sm hover:bg-white/90 transition-colors text-center backdrop-blur-sm"
+            >
+              Get Started
+            </Link>
+            <Link
+              href="/docs/components/button"
+              className="px-8 py-3 rounded-xl border border-white/15 text-white/80 font-semibold text-sm hover:bg-white/5 transition-colors text-center backdrop-blur-sm"
+            >
+              Browse Components
+            </Link>
+          </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-10 flex flex-col items-center gap-2 animate-bounce">
+        <div className="absolute bottom-10 flex flex-col items-center gap-2 animate-bounce z-10">
           <span className="text-xs text-white/30 tracking-widest uppercase">
             Scroll
           </span>

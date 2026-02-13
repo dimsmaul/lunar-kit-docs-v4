@@ -5,7 +5,16 @@ import { ReactNode } from 'react';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <DocsLayout tree={source.pageTree} nav={{ title: 'My Docs' }}>
+    <DocsLayout
+      tree={source.pageTree}
+      nav={{
+        title: (
+          <span className="font-bold tracking-tight">
+            🌙 Lunar Kit
+          </span>
+        ),
+      }}
+    >
       {children}
     </DocsLayout>
   );

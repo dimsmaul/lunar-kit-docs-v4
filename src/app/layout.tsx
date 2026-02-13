@@ -12,7 +12,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body>
-        <RootProvider>{children}</RootProvider>
+        <RootProvider
+          theme={{
+            defaultTheme: 'dark',
+            attribute: 'class',
+          }}
+        >
+          {children}
+        </RootProvider>
       </body>
     </html>
   );
