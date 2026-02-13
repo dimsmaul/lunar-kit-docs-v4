@@ -1,44 +1,34 @@
-import React from 'react'
+'use client'
 
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { Pre, CodeBlock } from 'fumadocs-ui/components/codeblock';
+import React from 'react'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+import { PillTabs } from './pill-tabs';
 
 
 export interface DemonstrationProps {
     components: React.ReactNode
-    code: React.ReactNode
+    code: string
 }
 
 const Demonstration: React.FC<DemonstrationProps> = ({ components, code }) => {
-  return (
-    <div>
-        <Tabs defaultValue="demo" className="w-full" items={['Demo', 'Code']}>
-            <Tab value="demo" >
-                <div className="p-4">
-                    {/* Replace the following with actual demonstration components */}
-                    <div>
-                        <div className="p-4">
+    const [tab, setTab] = React.useState<string>('Demo')
+    return (
+        <div>
+            <PillTabs items={['Demo', 'Code']} active={tab} onChange={setTab} />
+            <div className='mt-4'>
+                {
+                    tab === 'Demo' ? (
+                        <div className="p-4 min-h-52 flex items-center justify-center border rounded-lg bg-fd-background ">
                             {components}
                         </div>
-                    </div>
-                </div>
-            </Tab>
-            <Tab value="code">
-                 <DynamicCodeBlock lang="tsx" code={
-`// Example code goes here
-import React from 'react';
+                    ) : (
+                        <DynamicCodeBlock lang="tsx" code={code} />
+                    )
+                }
+            </div>
 
-const ExampleComponent = () => {
-    return <div>Hello, World!</div>;
-};
-
-export default ExampleComponent;`
-                 } />
-            </Tab>
-        </Tabs> 
-    </div>
-  )
+        </div>
+    )
 }
 
 export default Demonstration
