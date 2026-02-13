@@ -1,10 +1,12 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 import WireframePlanet from "@/components/wireframe-planet";
 import TwinklingStars from "@/components/twinkling-stars";
+import LandingNavbar from "@/components/landing-navbar";
 
 function CopyIcon({ className }: { className?: string }) {
   return (
@@ -61,24 +63,24 @@ function CodeBlock({
   };
 
   return (
-    <div className="relative group rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-sm overflow-hidden">
+    <div className="relative group rounded-xl border border-foreground/10 bg-foreground/[0.03] backdrop-blur-sm overflow-hidden">
       {label && (
-        <div className="px-4 py-2 border-b border-white/10 text-xs text-white/40 font-mono">
+        <div className="px-4 py-2 border-b border-foreground/10 text-xs text-muted-foreground font-mono">
           {label}
         </div>
       )}
-      <div className="px-4 py-3 font-mono text-sm text-white/80 overflow-x-auto">
+      <div className="px-4 py-3 font-mono text-sm text-foreground/80 overflow-x-auto">
         <pre className="whitespace-pre">{code}</pre>
       </div>
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors opacity-0 group-hover:opacity-100"
+        className="absolute top-2 right-2 p-2 rounded-lg bg-foreground/5 hover:bg-foreground/10 transition-colors opacity-0 group-hover:opacity-100"
         aria-label="Copy code"
       >
         {copied ? (
-          <CheckIcon className="text-green-400" />
+          <CheckIcon className="text-green-500" />
         ) : (
-          <CopyIcon className="text-white/50" />
+          <CopyIcon className="text-muted-foreground" />
         )}
       </button>
     </div>
@@ -152,38 +154,66 @@ const features = [
   },
 ];
 
+const emptySubscribe = () => () => {};
+
+function useIsMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+}
+
 export default function Page() {
+  const { resolvedTheme } = useTheme();
+  const mounted = useIsMounted();
+
+  const isDark = mounted ? resolvedTheme === "dark" : true;
+
   return (
-    <div className="relative min-h-screen bg-[hsl(222.2,84%,4.9%)] text-white overflow-x-hidden">
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* Floating Navbar */}
+      <LandingNavbar />
+
       {/* Twinkling Stars */}
-      <TwinklingStars count={180} />
+      <TwinklingStars count={180} dark={isDark} />
 
       {/* ===== HERO / JUMBOTRON ===== */}
       <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
         {/* Wireframe Planet — behind text */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Glow */}
-          <div className="absolute w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-[700px] md:h-[700px] rounded-full bg-white/[0.015] blur-[100px]" />
+          <div
+            className={`absolute w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-[700px] md:h-[700px] rounded-full blur-[100px] ${
+              isDark ? "bg-white/[0.015]" : "bg-foreground/[0.04]"
+            }`}
+          />
           <div className="w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-[700px] md:h-[700px]">
-            <WireframePlanet />
+            <WireframePlanet dark={isDark} />
           </div>
         </div>
 
         {/* Content — on top of planet */}
         <div className="relative z-10 flex flex-col items-center">
           {/* Badge */}
-          <div className="mb-6 px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-md text-xs text-white/60 tracking-widest uppercase">
+          <div className="mb-6 px-4 py-1.5 rounded-full border border-foreground/10 bg-foreground/[0.03] backdrop-blur-md text-xs text-muted-foreground tracking-widest uppercase">
             React Native &middot; Web &middot; UI Kit
           </div>
 
           {/* Heading */}
           <h1 className="text-center text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[1.05]">
-            <span className="bg-gradient-to-b from-white via-white/90 to-white/40 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]">
+            <span
+              className={`bg-clip-text text-transparent ${
+                isDark
+                  ? "bg-gradient-to-b from-white via-white/90 to-white/40 drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]"
+                  : "bg-gradient-to-b from-gray-900 via-gray-800 to-gray-400"
+              }`}
+            >
               Lunar Kit
             </span>
           </h1>
 
-          <p className="mt-6 text-center text-lg sm:text-xl text-white/50 max-w-2xl leading-relaxed backdrop-blur-sm">
+          <p className="mt-6 text-center text-lg sm:text-xl text-muted-foreground max-w-2xl leading-relaxed">
             A universal component library for React Native and Web.
             <br className="hidden sm:block" />
             Beautiful, accessible, and built for the modern stack.
@@ -193,13 +223,13 @@ export default function Page() {
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
             <Link
               href="/docs"
-              className="px-8 py-3 rounded-xl bg-white text-[hsl(222.2,84%,4.9%)] font-semibold text-sm hover:bg-white/90 transition-colors text-center backdrop-blur-sm"
+              className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity text-center"
             >
               Get Started
             </Link>
             <Link
               href="/docs/components/button"
-              className="px-8 py-3 rounded-xl border border-white/15 text-white/80 font-semibold text-sm hover:bg-white/5 transition-colors text-center backdrop-blur-sm"
+              className="px-8 py-3 rounded-xl border border-foreground/15 text-foreground/80 font-semibold text-sm hover:bg-foreground/5 transition-colors text-center backdrop-blur-sm"
             >
               Browse Components
             </Link>
@@ -208,7 +238,7 @@ export default function Page() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-10 flex flex-col items-center gap-2 animate-bounce z-10">
-          <span className="text-xs text-white/30 tracking-widest uppercase">
+          <span className="text-xs text-muted-foreground/50 tracking-widest uppercase">
             Scroll
           </span>
           <svg
@@ -221,7 +251,7 @@ export default function Page() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-white/30"
+            className="text-muted-foreground/50"
           >
             <path d="m6 9 6 6 6-6" />
           </svg>
@@ -233,10 +263,16 @@ export default function Page() {
         <div className="max-w-3xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+            <h2
+              className={`text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent ${
+                isDark
+                  ? "bg-gradient-to-b from-white to-white/60"
+                  : "bg-gradient-to-b from-gray-900 to-gray-500"
+              }`}
+            >
               Ship in Minutes
             </h2>
-            <p className="mt-4 text-white/40 text-lg max-w-xl mx-auto">
+            <p className="mt-4 text-muted-foreground text-lg max-w-xl mx-auto">
               Get started with a single install command. Import components and
               build beautiful interfaces instantly.
             </p>
@@ -246,11 +282,11 @@ export default function Page() {
           <div className="space-y-6">
             {/* Step 1 - Install */}
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-sm font-mono text-white/60">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full border border-foreground/20 flex items-center justify-center text-sm font-mono text-muted-foreground">
                 1
               </div>
               <div className="flex-1 space-y-3">
-                <p className="text-white/70 text-sm font-medium">
+                <p className="text-foreground/70 text-sm font-medium">
                   Install the package
                 </p>
                 <CodeBlock code="npx lunar-kit init" label="Terminal" />
@@ -259,11 +295,11 @@ export default function Page() {
 
             {/* Step 2 - Add components */}
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-sm font-mono text-white/60">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full border border-foreground/20 flex items-center justify-center text-sm font-mono text-muted-foreground">
                 2
               </div>
               <div className="flex-1 space-y-3">
-                <p className="text-white/70 text-sm font-medium">
+                <p className="text-foreground/70 text-sm font-medium">
                   Add the components you need
                 </p>
                 <CodeBlock
@@ -275,11 +311,11 @@ export default function Page() {
 
             {/* Step 3 - Import */}
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-sm font-mono text-white/60">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full border border-foreground/20 flex items-center justify-center text-sm font-mono text-muted-foreground">
                 3
               </div>
               <div className="flex-1 space-y-3">
-                <p className="text-white/70 text-sm font-medium">
+                <p className="text-foreground/70 text-sm font-medium">
                   Import and start building
                 </p>
                 <CodeBlock
@@ -297,10 +333,16 @@ export default function Page() {
         <div className="max-w-5xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-20">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+            <h2
+              className={`text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent ${
+                isDark
+                  ? "bg-gradient-to-b from-white to-white/60"
+                  : "bg-gradient-to-b from-gray-900 to-gray-500"
+              }`}
+            >
               Why Lunar Kit?
             </h2>
-            <p className="mt-4 text-white/40 text-lg max-w-xl mx-auto">
+            <p className="mt-4 text-muted-foreground text-lg max-w-xl mx-auto">
               Everything you need to build polished, cross-platform apps —
               without the headache.
             </p>
@@ -311,16 +353,16 @@ export default function Page() {
             {features.map((feature, i) => (
               <div
                 key={i}
-                className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm p-6 hover:border-white/15 hover:bg-white/[0.04] transition-all duration-300"
+                className="group relative rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] backdrop-blur-sm p-6 hover:border-foreground/15 hover:bg-foreground/[0.04] transition-all duration-300"
               >
                 {/* Icon */}
-                <div className="mb-4 w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center text-white/60 group-hover:text-white/80 transition-colors">
+                <div className="mb-4 w-10 h-10 rounded-xl bg-foreground/[0.06] flex items-center justify-center text-muted-foreground group-hover:text-foreground/80 transition-colors">
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-white/90 mb-2">
+                <h3 className="text-lg font-semibold text-foreground/90 mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-white/40 leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -332,16 +374,22 @@ export default function Page() {
       {/* ===== FOOTER CTA ===== */}
       <section className="relative z-10 py-32 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+          <h2
+            className={`text-3xl sm:text-4xl font-bold tracking-tight bg-clip-text text-transparent ${
+              isDark
+                ? "bg-gradient-to-b from-white to-white/60"
+                : "bg-gradient-to-b from-gray-900 to-gray-500"
+            }`}
+          >
             Ready to Launch?
           </h2>
-          <p className="mt-4 text-white/40 text-lg">
+          <p className="mt-4 text-muted-foreground text-lg">
             Start building beautiful cross-platform apps today.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/docs"
-              className="px-8 py-3 rounded-xl bg-white text-[hsl(222.2,84%,4.9%)] font-semibold text-sm hover:bg-white/90 transition-colors"
+              className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity"
             >
               Read the Docs
             </Link>
@@ -349,7 +397,7 @@ export default function Page() {
               href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-8 py-3 rounded-xl border border-white/15 text-white/80 font-semibold text-sm hover:bg-white/5 transition-colors inline-flex items-center justify-center gap-2"
+              className="px-8 py-3 rounded-xl border border-foreground/15 text-foreground/80 font-semibold text-sm hover:bg-foreground/5 transition-colors inline-flex items-center justify-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -367,15 +415,15 @@ export default function Page() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/[0.06] py-8 px-4">
+      <footer className="relative z-10 border-t border-foreground/[0.06] py-8 px-4">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-white/30">
+          <p className="text-sm text-muted-foreground/60">
             &copy; {new Date().getFullYear()} Lunar Kit. Built with care.
           </p>
           <div className="flex gap-6">
             <Link
               href="/docs"
-              className="text-sm text-white/30 hover:text-white/60 transition-colors"
+              className="text-sm text-muted-foreground/60 hover:text-foreground/60 transition-colors"
             >
               Docs
             </Link>
@@ -383,7 +431,7 @@ export default function Page() {
               href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-white/30 hover:text-white/60 transition-colors"
+              className="text-sm text-muted-foreground/60 hover:text-foreground/60 transition-colors"
             >
               GitHub
             </a>

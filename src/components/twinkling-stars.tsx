@@ -17,7 +17,13 @@ function seededRandom(seed: number) {
   return x - Math.floor(x);
 }
 
-export default function TwinklingStars({ count = 150 }: { count?: number }) {
+export default function TwinklingStars({
+  count = 150,
+  dark = true,
+}: {
+  count?: number;
+  dark?: boolean;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
 
@@ -56,6 +62,7 @@ export default function TwinklingStars({ count = 150 }: { count?: number }) {
             0.5 +
           0.5;
         const opacity = star.baseOpacity + twinkle * 0.6;
+        const color = dark ? "245, 245, 240" : "60, 60, 90";
 
         return (
           <div
@@ -66,10 +73,10 @@ export default function TwinklingStars({ count = 150 }: { count?: number }) {
               top: `${star.y}%`,
               width: star.size,
               height: star.size,
-              backgroundColor: `rgba(245, 245, 240, ${opacity})`,
+              backgroundColor: `rgba(${color}, ${dark ? opacity : opacity * 0.5})`,
               boxShadow:
                 opacity > 0.5
-                  ? `0 0 ${star.size * 3}px rgba(245, 245, 240, ${opacity * 0.4})`
+                  ? `0 0 ${star.size * 3}px rgba(${color}, ${(dark ? opacity : opacity * 0.3) * 0.4})`
                   : "none",
               transition: "opacity 0.1s ease-out",
             }}

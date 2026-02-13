@@ -67,9 +67,15 @@ function project(
   };
 }
 
-export default function WireframePlanet() {
+export default function WireframePlanet({ dark = true }: { dark?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
+  const darkRef = useRef(dark);
+
+  // Keep the ref in sync
+  useEffect(() => {
+    darkRef.current = dark;
+  }, [dark]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -130,6 +136,8 @@ export default function WireframePlanet() {
     const angleX = 0.3; // slight tilt
 
     const animate = () => {
+      const isDark = darkRef.current;
+      const dotColor = isDark ? "245, 245, 240" : "15, 15, 30";
       const currentRadius = Math.min(width, height) * 0.32;
       ctx.clearRect(0, 0, width, height);
 
@@ -166,7 +174,7 @@ export default function WireframePlanet() {
             ctx.beginPath();
             ctx.moveTo(a.projected.x, a.projected.y);
             ctx.lineTo(b.projected.x, b.projected.y);
-            ctx.strokeStyle = `rgba(245, 245, 240, ${opacity})`;
+            ctx.strokeStyle = `rgba(${dotColor}, ${opacity})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -193,7 +201,7 @@ export default function WireframePlanet() {
           const a = transformedRing[idx];
           const b = transformedRing[nextIdx];
           const opacity = 0.08 * ((a.projected.scale + b.projected.scale) / 2);
-          ctx.strokeStyle = `rgba(245, 245, 240, ${opacity})`;
+          ctx.strokeStyle = `rgba(${dotColor}, ${opacity})`;
           ctx.lineWidth = 0.4;
           ctx.beginPath();
           ctx.moveTo(a.projected.x, a.projected.y);
@@ -209,7 +217,7 @@ export default function WireframePlanet() {
         const opacity = 0.5 + 0.5 * projected.scale;
         ctx.beginPath();
         ctx.arc(projected.x, projected.y, size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245, 245, 240, ${opacity})`;
+        ctx.fillStyle = `rgba(${dotColor}, ${opacity})`;
         ctx.fill();
       }
 
@@ -222,9 +230,10 @@ export default function WireframePlanet() {
         height / 2,
         currentRadius * 1.5
       );
-      gradient.addColorStop(0, "rgba(245, 245, 240, 0.02)");
-      gradient.addColorStop(0.5, "rgba(245, 245, 240, 0.01)");
-      gradient.addColorStop(1, "rgba(245, 245, 240, 0)");
+      gradient.addColorStop(0, `rgba(${dotColor}, 0.02)`);
+      gradient.addColorStop(0.5, `rgba(${dotColor}, 0.01)`);
+      gradient.addColorStop(1, `rgba(${dotColor}, 0)`);
+
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
